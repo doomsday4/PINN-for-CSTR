@@ -6,8 +6,8 @@ from torch.utils.data import DataLoader, TensorDataset
 
 data = pd.read_csv('CSTR_jacket_simData.csv')
 
-X = data[['F2', 'T1', 'CA1', 'F1', 'Fc1', 'Tc1', 'Time']].values
-y = data[['V', 'CA', 'T', 'Tc_out']].values
+X = data[['F2', 'T1', 'CA1', 'F1', 'Fc1', 'Tc1', 'Time', 'V']].values
+y = data[['CA', 'T', 'Tc_out']].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=45)
 
@@ -87,8 +87,8 @@ class PINNModel(nn.Module):
         batch_y = torch.tensor(batch_y, dtype=torch.float32).to(device)
 
         # Extract variables
-        F, T1, CA1, F1, Fc1, Tc1, Time = batch_X.T
-        V, CA, T, Tc_out = model_output.T
+        F, T1, CA1, F1, Fc1, Tc1, Time, V = batch_X.T
+        CA, T, Tc_out = model_output.T
 
         # Calculate derivatives using the reactor equations
         dCa_dt, dT_dt = reactor_equations([CA, T], F, V, CA1, T1, Fc1, Tc1)
@@ -120,7 +120,7 @@ from tqdm import tqdm
 input_size = X_train_tensor.shape[1]
 hidden_layers = 3
 hidden_nodes = 128
-output_size = 4
+output_size = 3
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') #Currently using CPU only. Using GPU could significanlty improve training time
 
 model = PINNModel(input_size, hidden_layers, hidden_nodes, output_size).to(device)
@@ -175,35 +175,43 @@ print(f'Test MSE: {mse_test:.4f}, R2: {r2_test:.4f}')
 import matplotlib.pyplot as plt
 
 # Plot of True vs. Predicted values for each output variable
-def plot_true_vs_pred(y_true, y_pred, title, ylabel):
+def plot_true_vs_pred(y_true, y_pred, title, ylabel, unit):
     plt.figure(figsize=(10, 6))
     plt.plot(y_true, label='True')
     plt.plot(y_pred, label='Predicted', linestyle='--')
     plt.title(title)
-    plt.xlabel('Time')
-    plt.ylabel(ylabel)
+    plt.xlabel('Time (in seconds)')
+    plt.ylabel(ylabel+unit)
     plt.legend()
     plt.show()
 
 # Scatter plot of True vs. Predicted values
-def scatter_true_vs_pred(y_true, y_pred, title):
+def scatter_true_vs_pred(y_true, y_pred, title, unit):
     plt.figure(figsize=(6, 6))
     plt.scatter(y_true, y_pred, alpha=0.3)
     plt.plot([y_true.min(), y_true.max()], [y_true.min(), y_true.max()], 'r--', lw=2)
-    plt.title(title)
+    plt.title(title + unit)
     plt.xlabel('True Values')
     plt.ylabel('Predicted Values')
     plt.show()
 
 # Plotting for train data
-for i, label in enumerate(['V', 'CA', 'T', 'Tc_out']):
-    plot_true_vs_pred(y_train[:, i], y_train_pred[:, i], f'True vs Predicted for {label} (Train)', label)
-    scatter_true_vs_pred(y_train[:, i], y_train_pred[:, i], f'Scatter Plot for {label} (Train)')
+for i, label in enumerate(['CA', 'T', 'Tc_out']):
+    if (label == 'CA'):
+        unit = ' (in kmole/m^(3))'
+    else:
+        unit = ' (in Kelvin)'
+    plot_true_vs_pred(y_train[:, i], y_train_pred[:, i], f'True vs Predicted for {label} (Train)', label, unit)
+    scatter_true_vs_pred(y_train[:, i], y_train_pred[:, i], f'Scatter Plot for {label} (Train)', unit)
 
 # Plotting for test data
-for i, label in enumerate(['V', 'CA', 'T', 'Tc_out']):
-    plot_true_vs_pred(y_test[:, i], y_test_pred[:, i], f'True vs Predicted for {label} (Test)', label)
-    scatter_true_vs_pred(y_test[:, i], y_test_pred[:, i], f'Scatter Plot for {label} (Test)')
+for i, label in enumerate(['CA', 'T', 'Tc_out']):
+    if (label == 'CA'):
+        unit = ' (in kmole/m^(3))'
+    else:
+        unit = ' (in Kelvin)'
+    plot_true_vs_pred(y_test[:, i], y_test_pred[:, i], f'True vs Predicted for {label} (Test)', label, unit)
+    scatter_true_vs_pred(y_test[:, i], y_test_pred[:, i], f'Scatter Plot for {label} (Test)', unit)
 
 def plot_learning_curve(train_losses, title='Learning Curve'):
     epochs = range(1, len(train_losses) + 1)
