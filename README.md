@@ -1,1 +1,1 @@
-# Physics-Informed-Neural-Networks-PINN-
+# Physics-Informed-Neural-Networks-PINN
