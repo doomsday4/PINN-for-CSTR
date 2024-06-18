@@ -3,7 +3,7 @@ Welcome to the repository for my research project on Physics-Informed Neural Net
 ## Project Overview
 This repository contains the implementation and analysis of PINN-based models for simulating the dynamics of different Chemical, Physical, Mechanical or Electrical processes. Our model leverages both data-driven machine learning techniques and fundamental physical equations to accurately predict key reactor outputs, such as concentration of reactants and temperature profiles, while ensuring adherence to underlying physical laws. This model doesn't employ any realistic control parameters, and hence, is a relatively idealistic model.
 
-To use the code, install all the necessary dependencies by running the following command in their terminal:
+To use the code, install all the necessary dependencies by running the following command in the terminal:
 
 `pip install -r requirements.txt`
 
