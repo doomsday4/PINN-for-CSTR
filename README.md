@@ -1,7 +1,12 @@
 # Physics-Informed-Neural-Networks-PINN
 Welcome to the repository for my research project on Physics-Informed Neural Networks (PINNs) applied to different industrial processes. This project is part of my research internship at Kyoto University's Informatics Lab under the supervision of Dr. Manabu Kano.
 ## Project Overview
-This repository contains the implementation and analysis of PINN-based models for simulating the dynamics of different Chemical, Physical, Mechanical or Electrical processes. Our model leverages both data-driven machine learning techniques and fundamental physical equations to accurately predict key reactor outputs, such as concentration of reactants and temperature profiles, while ensuring adherence to underlying physical laws.
+This repository contains the implementation and analysis of PINN-based models for simulating the dynamics of different Chemical, Physical, Mechanical or Electrical processes. Our model leverages both data-driven machine learning techniques and fundamental physical equations to accurately predict key reactor outputs, such as concentration of reactants and temperature profiles, while ensuring adherence to underlying physical laws. This model doesn't employ any realistic control parameters, and hence, is a relatively idealistic model.
+
+To use the code, install all the necessary dependencies by running the following command in their terminal:
+
+`pip install -r requirements.txt`
+
 ### PINN for a CSTR
 A Continuous Stirred Tank Reactor (CSTR) is a common type of chemical reactor which is typically used for liquid-phase reactions. It is a very basic and simple model.
 1. A CSTR operates continuously, with reactants being continuously fed into the reactor and products being continuously removed. This ensures that the reactor operates at a steady state.
