@@ -16,3 +16,12 @@ plt.xlabel('Time')
 plt.ylabel('Tc_out')
 plt.grid(True)
 plt.show()
+
+# Plot Reactor Temperature against Time
+plt.figure(figsize=(10, 6))
+plt.plot(data['Time'], data['T'], marker='o', linestyle='-', color='b')
+plt.title('Time vs T')
+plt.xlabel('Time')
+plt.ylabel('T')
+plt.grid(True)
+plt.show()
